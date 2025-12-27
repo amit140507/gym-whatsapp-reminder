@@ -31,9 +31,7 @@
       if (isManageCustomers) {
         message =
 `Dear ${name},
-Rise and Shine 💪
-Be regular for your workout.
-From AbhiFit Health Club`;
+Rise and Shine, Be regular for your workout. From AbhiFit Health Club`;
 
         label = "Regular Reminder";
       }
