@@ -1,7 +1,8 @@
 (function () {
 
-  const isDashboard = window.location.pathname.includes("dash.php");
-  const isManageCustomers = window.location.pathname.includes("manage_customers.php");
+  const path = window.location.pathname;
+  const isDashboard = path.includes("dash.php");
+  const isManageCustomers = path.includes("manage_customers.php");
 
   function cleanPhone(phone) {
     return phone.replace(/\D/g, "");
@@ -17,42 +18,38 @@
       const tds = row.querySelectorAll("td");
       if (tds.length < 5) return;
 
-      const name = tds[2]?.innerText.trim();
+      const name  = tds[2]?.innerText.trim();
       const phone = tds[3]?.innerText.trim();
-      const date = tds[1]?.innerText.trim(); // date column is consistent
+      const date  = tds[1]?.innerText.trim();
 
-      if (!phone || phone.length < 10) return;
+      if (!phone || cleanPhone(phone).length < 10) return;
 
       let message = "";
-      let label = "WhatsApp";
+      let label   = "WhatsApp";
 
-      /* -----------------------------
-         1️⃣ REGULAR WORKOUT REMINDER
-      --------------------------------*/
+      /* 1️⃣ REGULAR WORKOUT REMINDER */
       if (isManageCustomers) {
         message =
 `Dear ${name},
-Rise and Shine, Be regular for your workout.
+Rise and Shine 💪
+Be regular for your workout.
 From AbhiFit Health Club`;
 
         label = "Regular Reminder";
       }
 
-      /* -----------------------------
-         DASHBOARD LOGIC
-      --------------------------------*/
+      /* DASHBOARD LOGIC */
       if (isDashboard) {
 
-        const amountCell = tds[5]; // payment table has amount here
-        const amount = amountCell?.innerText?.includes(".")
-          ? amountCell.innerText.trim()
-          : null;
+        const amountCell = tds[5];
+        const amount = amountCell?.innerText.replace(/[^\d]/g, "");
 
         /* 2️⃣ PAYMENT REMINDER */
         if (amount) {
           message =
 `Dear ${name},
-You have an outstanding amount of Rs ${amount} to be paid by ${date}.
+You have an outstanding amount of Rs ${amount}
+Please pay before ${date}.
 Kind Regards,
 AbhiFit Health Club`;
 
@@ -64,7 +61,7 @@ AbhiFit Health Club`;
           message =
 `Dear ${name},
 Your Membership Renewal Date is ${date}.
-Please Renew Your Membership.
+Please renew your membership.
 From AbhiFit Health Club`;
 
           label = "Renewal Reminder";
@@ -75,26 +72,27 @@ From AbhiFit Health Club`;
 
       const btn = document.createElement("button");
       btn.innerText = label;
-      btn.style.background = "#25D366";
-      btn.style.color = "#fff";
-      btn.style.border = "none";
-      btn.style.padding = "6px 10px";
-      btn.style.borderRadius = "6px";
-      btn.style.cursor = "pointer";
-      btn.style.marginLeft = "6px";
-      btn.style.fontSize = "12px";
+      btn.style.cssText = `
+        background:#25D366;
+        color:#fff;
+        border:none;
+        padding:6px 10px;
+        border-radius:6px;
+        cursor:pointer;
+        margin-left:6px;
+        font-size:12px;
+      `;
 
       btn.onclick = () => {
         const url = `https://wa.me/91${cleanPhone(phone)}?text=${encodeURIComponent(message)}`;
         window.open(url, "_blank");
       };
 
-      // Action column (last column)
       tds[tds.length - 1].appendChild(btn);
     });
   }
 
   addButtons();
-  setInterval(addButtons, 3000); // handles AJAX reloads safely
+  setInterval(addButtons, 3000);
 
 })();

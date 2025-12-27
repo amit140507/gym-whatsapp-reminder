@@ -13,7 +13,7 @@
     {
       "matches": [
         "https://app.geteasysoftware.com/abhifit_health_club/dash.php",
-        "https://app.geteasysoftware.com/abhifit_health_club/manage_customers.php"
+        "https://app.geteasysoftware.com/abhifit_health_club/manage_customers.php*"
       ],
       "js": ["content.js"]
     }
